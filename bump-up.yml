@@ -1,0 +1,19 @@
+name: bump up version
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Next vesion'
+        required: true
+        
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Add Version Comment
+        run: echo "Update to ${{ github.event.inputs.version }}" >> ChangeLog.txt
+
+      - uses: stefanzweifel/git-auto-commit-action@v4
