@@ -57,10 +57,10 @@ jobs:
         title: Update action.log - ${{ steps.timestamp.outputs.YearMonthDay }}
         body: |
           ## 概要
-          - このPRは、`action.log`ファイルの更新を含んでいます。
-          - `action.log`には、実行日時と処理件数が記録されています。
-          - テストモードで実行された場合、指定された件数のみが処理されます。
-          - フルモードで実行された場合、全ての対象記事が処理されます。
+          - このPull Requestは、`action.log`ファイルを更新するためのものです。
+          - 実行モード: ${{ github.event.inputs.test_mode == 'true' && 'テストモード' || 'フルモード' }}
+          - 実行日時: ${{ steps.timestamp.outputs.YearMonthDay }}
+          - 実行結果: `action.log`ファイルが更新されました。
     
     - name: Summary
       if: always()
