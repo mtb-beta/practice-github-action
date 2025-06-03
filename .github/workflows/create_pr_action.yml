@@ -28,7 +28,7 @@ jobs:
       id: timestamp
       run: |
         echo "timestamp=$(date +%Y%m%d-%H%M%S)" >> $GITHUB_OUTPUT
-        echot "Year-Month-Day: $(date +%Y-%m-%d)" >> $GITHUB_OUTPUT
+        echo "Year-Month-Day: $(date +%Y-%m-%d)" >> $GITHUB_OUTPUT
     
     - name: Update action.log(test mode)
       if: ${{ github.event.inputs.test_mode == 'true' }}
