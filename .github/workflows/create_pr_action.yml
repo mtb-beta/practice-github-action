@@ -1,0 +1,71 @@
+name: Create Pull Request 
+
+on:
+  workflow_dispatch:
+    inputs:
+      test_mode:
+        description: 'テストモード'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  update-action-log:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+    
+    - name: Generate timestamp
+      id: timestamp
+      run: echo "timestamp=$(date +%Y%m%d-%H%M%S)" >> $GITHUB_OUTPUT
+    
+    - name: Update action.logi(test mode)
+      if: ${{ github.event.inputs.test_mode == 'true' }}
+      run: |
+        echo "Running in test mode"
+        echo "Timestamp: $(date +%Y-%m-%d %H:%M:%S) at Test Mode" >> action.log
+
+    - name: Update action.log(full mode)
+      if: ${{ github.event.inputs.test_mode != 'true' }}
+      run: |
+        echo "Running in full mode"
+        echo "Timestamp: $(date +%Y-%m-%d %H:%M:%S) at Full Mode" >> action.log
+    
+    - name: Create Pull Request
+      id: create-pull-request
+      uses: peter-evans/create-pull-request@v7
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: "Update action.log - $(date +%Y-%m-%d)"
+        committer: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+        author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+        branch: action-log-update-${{ steps.timestamp.outputs.timestamp }}
+        delete-branch: true
+        title: "Update action.log- $(date +%Y-%m-%d)"
+        body: |
+          ## 概要
+          - このPRは、`action.log`ファイルの更新を含んでいます。
+          - `action.log`には、実行日時と処理件数が記録されています。
+          - テストモードで実行された場合、指定された件数のみが処理されます。
+          - フルモードで実行された場合、全ての対象記事が処理されます。
+    
+    - name: Summary
+      if: always()
+      run: |
+        echo "## Action実行結果" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        if [[ "${{ github.event.inputs.test_mode }}" == 'true' ]]; then
+          echo "✅ テストモードで実行されました。" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "✅ フルモードで実行されました。" >> $GITHUB_STEP_SUMMARY
+        fi
+
