@@ -26,31 +26,35 @@ jobs:
     
     - name: Generate timestamp
       id: timestamp
-      run: echo "timestamp=$(date +%Y%m%d-%H%M%S)" >> $GITHUB_OUTPUT
+      run: 
+        echo "timestamp=$(date +%Y%m%d-%H%M%S)" >> $GITHUB_OUTPUT
+        echot "Year-Month-Day: $(date +%Y-%m-%d)" >> $GITHUB_OUTPUT
     
-    - name: Update action.logi(test mode)
+    - name: Update action.log(test mode)
       if: ${{ github.event.inputs.test_mode == 'true' }}
       run: |
         echo "Running in test mode"
-        echo "Timestamp: $(date +%Y-%m-%d %H:%M:%S) at Test Mode" >> action.log
+        timestamp=$(date +"%Y-%m-%d %H:%M:%S")
+        echo "Timestamp: $timestamp at Test Mode" >> action.log
 
     - name: Update action.log(full mode)
       if: ${{ github.event.inputs.test_mode != 'true' }}
       run: |
         echo "Running in full mode"
-        echo "Timestamp: $(date +%Y-%m-%d %H:%M:%S) at Full Mode" >> action.log
-    
+        timestamp=$(date +"%Y-%m-%d %H:%M:%S")
+        echo "Timestamp: $timestamp at Full Mode" >> action.log
+
     - name: Create Pull Request
       id: create-pull-request
       uses: peter-evans/create-pull-request@v7
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        commit-message: "Update action.log - $(date +%Y-%m-%d)"
+        commit-message: Update action.log - ${{ steps.timestamp.outputs.timestamp }}
         committer: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
         author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
         branch: action-log-update-${{ steps.timestamp.outputs.timestamp }}
         delete-branch: true
-        title: "Update action.log- $(date +%Y-%m-%d)"
+        title: Update action.log - ${{ steps.timestamp-outputs.Year-Month-Day }}
         body: |
           ## 概要
           - このPRは、`action.log`ファイルの更新を含んでいます。
