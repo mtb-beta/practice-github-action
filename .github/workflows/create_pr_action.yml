@@ -28,7 +28,7 @@ jobs:
       id: timestamp
       run: |
         echo "timestamp=$(date +%Y%m%d-%H%M%S)" >> $GITHUB_OUTPUT
-        echo "Year-Month-Day: $(date +%Y-%m-%d)" >> $GITHUB_OUTPUT
+        echo "YearMonthDay=$(date +%Y-%m-%d)" >> $GITHUB_OUTPUT
     
     - name: Update action.log(test mode)
       if: ${{ github.event.inputs.test_mode == 'true' }}
@@ -54,7 +54,7 @@ jobs:
         author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
         branch: action-log-update-${{ steps.timestamp.outputs.timestamp }}
         delete-branch: true
-        title: Update action.log - ${{ steps.timestamp-outputs.Year-Month-Day }}
+        title: Update action.log - ${{ steps.timestamp-outputs.YearMonthDay }}
         body: |
           ## 概要
           - このPRは、`action.log`ファイルの更新を含んでいます。
