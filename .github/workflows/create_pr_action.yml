@@ -54,7 +54,7 @@ jobs:
         author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
         branch: action-log-update-${{ steps.timestamp.outputs.timestamp }}
         delete-branch: true
-        title: Update action.log - ${{ steps.timestamp-outputs.YearMonthDay }}
+        title: Update action.log - ${{ steps.timestamp.outputs.YearMonthDay }}
         body: |
           ## 概要
           - このPRは、`action.log`ファイルの更新を含んでいます。
